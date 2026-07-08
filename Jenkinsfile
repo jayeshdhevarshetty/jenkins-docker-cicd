@@ -4,6 +4,7 @@ pipeline {
         IMAGE="fastapi-cicd-app"
         CONTAINER="fastapi-cicd"
         PORT="8000"
+        NETWORK="jd_network"
     }
     stages{
         stage("Build Image"){
@@ -28,7 +29,7 @@ pipeline {
 
         stage("Run Container"){
             steps{
-                sh "docker run -d --name ${CONTAINER} -p ${PORT}:${PORT} ${IMAGE}"
+                sh "docker run -d --network ${NETWORK} --name ${CONTAINER} -p ${PORT}:${PORT} ${IMAGE}"
             }
         }
 
@@ -36,7 +37,7 @@ pipeline {
             steps{
                 sh """
                 sleep 5
-                curl http://localhost:${PORT}/health
+                curl http://${CONTAINER}:${PORT}/health
                 """
             }
         }
